@@ -17,6 +17,7 @@ label,legend{font-size:.85rem;color:var(--muted)}
 fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 input[type=text],input[type=password]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:12px;width:100%}
 .btn{display:block;text-align:center;text-decoration:none;font-weight:600;border-radius:5px;padding:14px 12px;background:var(--accent);color:var(--panel)}
+.btn.alt{background:transparent;color:var(--accent);border:2px solid var(--accent);padding:12px 10px}
 .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .sub{margin:0;color:var(--muted);font-size:.95rem}
 button{font:inherit;font-weight:600;border:1px solid var(--accent);border-radius:5px;padding:12px;background:var(--accent);color:var(--panel);cursor:pointer}
@@ -34,15 +35,16 @@ hr{width:100%;border:0;border-top:1px solid var(--line);margin:4px 0}
 <section id="r" hidden>
 <div id="c" class="combo"></div><p id="n"></p>
 <div id="lg" hidden>
-<hr><h2>Sign out your skis</h2>
-<p class="sub">Fill in your name, skate or classic, and your ski number.</p>
-<a id="fl" class="btn" href="#" target="_blank" rel="noopener">Open sign-out form</a>
+<hr><h2>Skis</h2>
+<p class="sub">Taking skis or bringing them back? Fill in your name, skate or classic, and your ski number.</p>
+<a id="fl" class="btn" href="#" target="_blank" rel="noopener" hidden>Sign skis out</a>
+<a id="rl" class="btn alt" href="#" target="_blank" rel="noopener" hidden>Sign skis back in</a>
 </div>
 <button id="h" type="button" class="ghost">Hide combo</button>
 </section>
 </main>
 <script>
-var D={s:"jTMUVxvEaCKtDdJ8AU4SQA==",i:"pSrlDN1hXmYA4sXZ",c:"igoqWuYFVmXACJAFwGPXWMzfa9SR20GdRTMSfDxSmowUjavRYFeMWn8oTzUpBwp4KXRT4xmtXFTooxNd0BBL3JdrplWi78LFVi68eqfd9REUzksyRb4TK/kgTEEWZBBFq0JAQCXc",n:600000};
+var D={s:"BHZSsddfa2T78gCUQydFWg==",i:"9ptFlV/1uRFrJY/W",c:"dkGjF0/X/qDsma1Ww8heiMwdMiDs+Gdow3Z7BhGPCMY/cc/ho4lwsh3c/QJe6nSuexY3/WsseW3xNXVlPszUN0YwnPKFFF9kfutguWUqTx0yXaushcCjewy/7lgTKOSjO1fhLRpK2c8CHLak9hQF0ExoTUhVif867U9ByfSStB/DlooXzhKT2L+bkDXfO4IAWO2PscCM2g==",n:600000};
 var L=null;
 function b(x){return Uint8Array.from(atob(x),function(ch){return ch.charCodeAt(0)})}
 var g=function(i){return document.getElementById(i)};
@@ -51,7 +53,8 @@ g("f").addEventListener("submit",async function(ev){ev.preventDefault();var e=g(
  var key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:b(D.s),iterations:D.n,hash:"SHA-256"},k,{name:"AES-GCM",length:256},false,["decrypt"]);
  var o=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:b(D.i)},key,b(D.c))));
  g("c").textContent=o.combo;g("n").textContent=o.note||"";g("n").hidden=!o.note;g("p").value="";e.textContent="";g("f").hidden=true;g("r").hidden=false;
- L=o.log||null;if(L&&/^https:\/\//.test(L.f||"")){g("fl").href=L.f;g("lg").hidden=false}else{g("lg").hidden=true}
+ L=o.log||{};var hf=/^https:\/\//.test(L.f||""),hr=/^https:\/\//.test(L.r||"");
+ if(hf)g("fl").href=L.f;if(hr)g("rl").href=L.r;g("fl").hidden=!hf;g("rl").hidden=!hr;g("lg").hidden=!(hf||hr);
  }catch(x){e.textContent="Wrong password. Try again.";}});
 g("h").addEventListener("click",function(){g("c").textContent="";g("n").textContent="";g("r").hidden=true;g("f").hidden=false;g("p").focus();});
 </script>
